@@ -1,0 +1,32 @@
+<div class="container p-5">
+
+    <form [formGroup]="myForm" (ngSubmit)="submitForm()">
+        <div>
+            <label for="productName">Product Name</label>
+            <input class="form-control" type="text" id="productName" formControlName="productName" required>
+        </div>
+        <div>
+            <label for="amount">Amount</label>
+            <input class="form-control" type="number" id="amount" formControlName="amount" required>
+        </div>
+        <div>
+            <label for="address">Address</label>
+            <input class="form-control" type="text" id="address" formControlName="address" required>
+        </div>
+        <div>
+            <label for="userName">User Name</label>
+            <input class="form-control" type="text" id="userName" formControlName="userName" required>
+        </div>
+        <div>
+            <label for="status">Status</label>
+            <select  class="form-control" id="status" formControlName="status" required>
+                <option value="">Select Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+        <br>
+        <button class="btn btn-primary" type="submit" [disabled]="myForm.invalid">Submit</button>
+    </form>
+</div>

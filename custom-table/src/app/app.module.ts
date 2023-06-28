@@ -18,12 +18,20 @@ import { MatIconModule } from '@angular/material/icon'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DataTableComponent } from './data-table/data-table.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { ToastrModule } from 'ngx-toastr';
+import { OrderComponent } from './order/order.component';
+import { OrderFormComponent } from './order/order-form/order-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
     AppComponent,
     CustomTableComponent,
-    DataTableComponent
+    DataTableComponent,
+    OrderComponent,
+    OrderFormComponent
   ],
   imports: [
     BrowserModule,
@@ -34,6 +42,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     CommonModule,
     MatButtonModule,
     MatInputModule,
+    MatIconModule,
     MatTooltipModule,
     RouterModule,
     MatTooltipModule,
@@ -41,8 +50,13 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     MatMenuModule,
     MatIconModule,
     BrowserAnimationsModule,
-    HttpClientModule
-
+    HttpClientModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right'
+    }),
+    NgxSpinnerModule,
+    ReactiveFormsModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

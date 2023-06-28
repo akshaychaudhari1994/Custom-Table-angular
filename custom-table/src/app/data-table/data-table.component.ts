@@ -18,8 +18,8 @@ export class DataTableComponent {
 
   @Input() isFilterable!: boolean;
   @Input() isPageable!: boolean;
-  @Input() paginationSizes!: number[];
-  @Input() defaultPageSize!: number;
+  @Input() paginationSize!: number;
+  @Input() totalPages!: number;
   @Input() rowActionIcon!: string;
   @Input() actions!: RowAction[];
   filteredData: any[] = []; // New array to hold filtered data
@@ -29,6 +29,10 @@ export class DataTableComponent {
   @Output() rowClickedEvent = new EventEmitter<any>();
   @Output() filterChangeEvent = new EventEmitter<any>();
   @Output() onFilterScrollTab = new EventEmitter<any>();
+  @Output() pageChange: EventEmitter<any> = new EventEmitter<any>();
+
+  sortColumn: string = '';
+  sortDirection: string = '';
 
   clickedFilter: any;
   constructor(public utilsService: UtilsService,
@@ -44,6 +48,10 @@ export class DataTableComponent {
     })
   }
 
+  onPageChange(event: any) {
+    this.pageChange.emit(event.pageIndex + 1)
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['tableData']) {
       if (!changes['tableData']['firstChange'] && (changes['tableData']['currentValue']).length <= 0) {
@@ -56,10 +64,9 @@ export class DataTableComponent {
 
   currentPage: number = 1;
   // pageSize: number = this.defaultPageSize;
-  totalPages: number = 0;
 
   updatePagination() {
-    this.totalPages = Math.ceil(this.filteredData.length / this.defaultPageSize);
+    // this.totalPages = Math.ceil(this.filteredData.length / this.defaultPageSize);
   }
 
   goToPage(pageNumber: number) {
@@ -68,9 +75,22 @@ export class DataTableComponent {
     }
   }
 
-  
+  sortData(column: string) {
+    if (column === this.sortColumn) {
+      // Reverse the sort direction if same column is clicked again
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Set the column and default sort direction
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    // Emit the sort event with column and direction
+    this.sorting.emit({ column: this.sortColumn, direction: this.sortDirection });
+  }
+
   getPrimaryActions(item?: any): RowAction[] {
-    return this.actions.filter((action) => action).slice(0, 1);
+    return this.actions.filter((action) => action)
   }
 
   applyFilter(e: any) {
@@ -87,8 +107,8 @@ export class DataTableComponent {
     this.updatePagination();
   }
 
-  rowClicked(item: any,index:number) {
-    this.rowClickedEvent.emit(item);
+  rowClicked(item: any, action: any) {
+    this.rowClickedEvent.emit({ item, action });
   }
 
   chkfilterApplied(filterFieldName: any) {

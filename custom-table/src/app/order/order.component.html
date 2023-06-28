@@ -1,0 +1,23 @@
+<!-- <app-custom-table [tableData]="orders"
+              [tableColumns]="ordersTableColumns"
+              [isFilterable]="true"
+              [actions]="actionConfig"
+              [isPageable]="true"
+              [paginationSizes]="[10, 20, 100]"
+              [defaultPageSize]="10"
+              [rowActionIcon]="'remove_shopping_cart'"
+              (sort)="sortData($event)"
+              (rowAction)="removeOrder($event)">
+</app-custom-table> -->
+<div class="container">
+    <h1>Orders</h1>
+    <button style="float: right;" class="btn btn-sm btn-primary m-2" (click)="openDialog()">Add +</button>
+    <br>
+    <div class="row">
+        <app-data-table [isPageable]="true" [paginationSize]="5" 
+        [totalPages]="totalPages" (pageChange)="onPageChange($event)"
+        (sorting)="sortData($event)" (rowClickedEvent)="onRowAction($event)" [isFilterable]="true"
+            [tableColumns]="ordersTableColumns" [tableData]="orders" [actions]="actionConfig">
+        </app-data-table>
+    </div>
+</div>
