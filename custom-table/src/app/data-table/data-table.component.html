@@ -1,0 +1,204 @@
+<div class="table-responsive c-table">
+
+    <div   class="row d-flex justify-content-between">
+        <div *ngIf="isFilterable" class="col-6">
+            <label for="filter">Filter:</label>
+            <input type="text" id="filter" name="filter" (input)="applyFilter($event)">
+        </div>
+        <div class="col-6">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
+                            style="cursor: pointer;" class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </button>
+                    </li>
+                    <li  style="display: flex;
+            align-items: center;
+            padding: 0 15px;">
+                        <span> Page {{ currentPage }} of {{ totalPages }}
+                        </span>
+                    </li>
+
+                    <li class="page-item">
+                        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                            class="page-link" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <table class="w-100" id="dataTable">
+        <thead>
+            <tr>
+                <th *ngFor="let head of tableColumns" [style]="head.thStyle">
+                    <div>
+                        <ng-container *ngIf="head.filterType">
+                            <span [id]="head.id" [class]="chkfilterApplied(head.filterFieldName)?'active-filter':''"
+                                (click)="showFilter(head)">
+                                <i class="bi bi-caret-down-fill" *ngIf="!head.isShowFilter"></i>
+                                <i class="bi bi-caret-up-fill" *ngIf="head.isShowFilter"></i>
+                            </span>
+                        </ng-container>
+                        <span (click)="showFilter(head)"> {{head.headTitle}} </span>
+                    </div>
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <ng-container *ngIf="filteredData && filteredData.length > 0">
+                <tr *ngFor="let item of filteredData.slice((currentPage - 1) * defaultPageSize, currentPage * defaultPageSize);let sr=index"
+                    (click)="clickedFilter && clickedFilter.isShowFilter = false;">
+                    <td *ngFor="let head of tableColumns" (click)="rowClicked(item,sr)" [style]="head.tdStyle">
+                        <ng-container *ngIf="!head.isMedia" class="scroll-td-div">
+                            <span *ngIf="!head.isList && head.fieldName" [style]="head.style">
+                                <span>
+                                    <ng-container *ngIf="head.redirectRoute">
+                                        <a [routerLink]="['/'+head.redirectRoute.route+'/'+item[head.redirectRoute.param]]"
+                                            routerLinkActive="active" [ariaCurrentWhenActive]="head.redirectRoute.route"
+                                            [ngClass]="(item?.published_status?.status || item?.status) && head.id =='head-1' ? (item?.published_status?.status || item?.status) + ' txt-decoration-none txt-capital pending' :'txt-decoration-none txt-capital pending'">
+
+                                            <span class="mr-3"
+                                                *ngFor="let tfield of (utilsService.commaSeparateValue(head.fieldName))">
+                                                {{item[tfield.trim()]?item[tfield.trim()]:'-'}}
+                                            </span>
+
+                                        </a>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="!head.redirectRoute">
+                                        <ul class="td-ul">
+                                            <ng-container *ngIf="!head.redirectRoute">
+
+                                                <ng-container *ngIf="head.fieldName !== 'email'; else emailBlock">
+                                                    <ng-container *ngIf="!head.isStatus;else statusBlock">
+                                                        <span class="mr-3"
+                                                            [ngClass]="item?.published_status?.status && head.id =='head-1' ? item?.published_status?.status + ' txt-decoration-none txt-capital pending' :'txt-decoration-none txt-capital pending'"
+                                                            *ngFor="let tfield of (utilsService.commaSeparateValue(head.fieldName))">
+                                                            {{item[tfield.trim()]?item[tfield.trim()]:'-'}}
+                                                        </span>
+                                                    </ng-container>
+                                                    <ng-template #statusBlock>
+                                                        <span class="mr-3"
+                                                            [ngClass]="item?.published_status?.status && head.id =='head-1' ? item?.published_status?.status + ' txt-decoration-none txt-capital pending' :'txt-decoration-none txt-capital pending'"
+                                                            *ngFor="let tfield of (utilsService.commaSeparateValue(head.fieldName))">
+                                                            {{item[tfield.trim()]=='active'?"Active":'Inactive'}}
+                                                        </span>
+                                                    </ng-template>
+                                                </ng-container>
+                                                <ng-template #emailBlock>
+                                                    <span class="mr-3"
+                                                        [ngClass]="item?.published_status?.status && head.id =='head-1' ? item?.published_status?.status + ' txt-decoration-none txt-lowecase pending' :'txt-decoration-none txt-lowecase pending'"
+                                                        *ngFor="let tfield of (utilsService.commaSeparateValue(head.fieldName))">
+                                                        {{item[tfield.trim()]?item[tfield.trim()]:'-'}}
+                                                    </span>
+                                                </ng-template>
+
+                                            </ng-container>
+                                        </ul>
+                                    </ng-container>
+                                </span>
+
+                            </span>
+                            <div *ngIf="head.isList">
+                                <ul class="td-ul">
+                                    <ng-container *ngIf='!utilsService.isObject(item[head.fieldName]); else objContent'>
+                                        <ng-container
+                                            *ngIf="item[head.fieldName] && (item[head.fieldName]).length > 0; else blankData">
+                                            <li *ngFor="let emt of item[head.fieldName]">
+                                                <span *ngIf="head.listField">{{emt[head.listField] ?
+                                                    emt[head.listField] :
+                                                    '-'}}</span>
+                                                <span *ngIf="!head.listField">{{emt?emt:'-'}}</span>
+                                            </li>
+                                        </ng-container>
+                                        <ng-template #blankData>
+                                            <li>-</li>
+                                        </ng-template>
+
+                                    </ng-container>
+                                    <ng-template #objContent>
+                                        <ng-container &>
+                                            <li *ngFor="let emt of head.objField">
+                                                <span *ngIf="emt.includes('static')">
+                                                    {{emt.split('static-')[1]}}
+                                                </span>
+                                                <span>{{utilsService.nestedObjectValue(item,emt)}}
+                                                </span>
+                                            </li>
+                                        </ng-container>
+                                    </ng-template>
+                                </ul>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="head.isMedia">
+                            <ng-container
+                                *ngIf="item[head.fieldName] && item[head.fieldName] === 'avatar'; else defaultImg">
+                                <ng-container *ngIf="item[head.fieldName]; else defaultImg">
+                                    <img [src]="item[head.fieldName]" width="90" height="90" class="image-thumbnail">
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #defaultImg>
+                                <img src="assets/single-file-upload.png" width="90" class="image-thumbnail" height="90">
+                            </ng-template>
+
+                        </div>
+                    </td>
+                    <td>
+                        <button mat-icon-button *ngFor="let action of getPrimaryActions(item);"
+                            (click)="rowClicked(action.name, sr)" [color]="action.type">
+                            <!-- <span>{{action.displayName}}</span> -->
+                            <mat-icon style="margin-left: 3px"
+                                class="material-icons-outlined">{{action.icon}}</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+            </ng-container>
+
+            <ng-container *ngIf="!filteredData || filteredData.length <= 0">
+                <tr class="no-data-tr">
+                    <td rowspan="2" colspan="10">
+                        {{loadingTxt}}
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+        <tfoot>
+            <!-- <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
+                            style="cursor: pointer;" class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </button>
+                    </li>
+                    <li>
+                        <span> Page {{ currentPage }} of {{ totalPages }}
+                        </span>
+                    </li>
+
+                    <li class="page-item">
+                        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                            class="page-link" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav> -->
+            <!-- <div class="Page navigation example" *ngIf="isPageable">
+                <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+                <span>Page {{ currentPage }} of {{ totalPages }}</span>
+                <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+            </div> -->
+        </tfoot>
+    </table>
+</div>
