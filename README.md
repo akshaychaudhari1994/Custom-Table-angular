@@ -3,41 +3,33 @@
 This is a sample project that demonstrates the integration of Angular frontend with Node.js backend.
 
 ## Features
-
-- Angular frontend with CRUD operations for products and categories
+- Angular custom configurable table
+- Angular frontend with crud operations for order
 - Node.js backend with API endpoints for products and categories
-- Sequelize ORM for database operations
-- MySQL database
+- MONGODB database
 
 ## Prerequisites
 
 - Node.js (version 16+)
 - Angular CLI (version 15)
-- MySQL database
 
 ## Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/akshaychaudhari1994/trootech_code.git
+git clone https://github.com/akshaychaudhari1994/CRUD-Node-angular-.git
 ## Install dependencies for the frontend:
-cd clientApp/ecom
+cd custom-table
 npm install --legacy-peer-deps 
 
 ## Install dependencies for the backend:
 npm install
 
-Set up the MySQL database:
-create `ecom` db
-
-## Create a new database named angular_node_db
-Update the database connection details in config/config.js
+Set up the mongodb database:
+connect db
 
 ## Run the migrations to create the necessary tables
-
-cd backend
-npx sequelize-cli db:migrate
 
 ## Start the server:
 npm start
