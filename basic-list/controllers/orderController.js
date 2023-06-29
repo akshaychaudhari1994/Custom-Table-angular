@@ -42,15 +42,17 @@ const getOrderList = async (req, res) => {
 
     let filter = {};
 
-    if (query && "status" in query) {
-      filter["status"] = query["status"].toLowerCase();
-    }
+    // if (query && "status" in query) {
+    //   filter["status"] = query["status"].toLowerCase();
+    // }
     if (searchQuery) {
       const query = {
         $or: [
           { productName: { $regex: searchQuery, $options: "i" } },
           { userName: { $regex: searchQuery, $options: "i" } },
           { address: { $regex: searchQuery, $options: "i" } },
+          { status: { $regex: searchQuery, $options: "i" } },
+
         ],
       };
       filter = { ...filter, ...query };
@@ -107,7 +109,7 @@ const getOrderList = async (req, res) => {
     if (!result) {
       return res.status(500).json({ message: "Unable to get orders" });
     }
-    result[0].totalDocs = countResult;
+    if (result.length > 0) result[0].totalDocs = countResult;
 
     return res.status(200).json(
       result && result.length > 0

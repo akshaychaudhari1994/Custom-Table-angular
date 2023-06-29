@@ -59,13 +59,13 @@ export class OrderComponent {
 
   actionConfig: RowAction[] = [
     { name: Actions.REMOVE_SHOPPING_CART, displayName: "remove_shopping_cart", tooltip: "remove_shopping_cart", icon: "remove_shopping_cart", iconColor: "red" },
-    { name: Actions.REMOVE_SHOPPING_CART, displayName: "remove_shopping_cart", tooltip: "remove_shopping_cart", icon: "remove_shopping_cart", iconColor: "#304FFE" },
   ]
 
   onRowAction(event: any) {
     switch (event.action) {
       case Actions.REMOVE_SHOPPING_CART:
-        this.orders.splice(event.index, 1);
+        // this.orders.splice(event.index, 1);
+        this.removeOrders(event.item.id)
         break;
     }
   }
@@ -81,7 +81,12 @@ export class OrderComponent {
     this.getOrders(this.filters)
   }
 
-  removeOrder(e: any) { }
+  onSearch(e: any) {
+    this.filters.currentPage = 1
+    this.filters.searchQuery = e
+    this.getOrders(this.filters)
+  }
+
 
   getOrders(data: any) {
     this.spinner.show()
@@ -92,6 +97,27 @@ export class OrderComponent {
         this.spinner.hide()
         this.orders = response.data
         this.totalPages = response.totalDocs
+      },
+      error: (error: any) => {
+        this.spinner.hide()
+        if (error?.error?.content) {
+          this.toastrService.error(error?.error?.content, "Error");
+        } else {
+          this.toastrService.error(error?.message, "Error");
+        }
+      }
+    });
+  }
+
+
+  removeOrders(id: any) {
+    this.spinner.show()
+    this.orderService.deleteOrder(id).pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe({
+      next: (response: any) => {
+        this.spinner.hide()
+        this.getOrders(this.filters)
       },
       error: (error: any) => {
         this.spinner.hide()

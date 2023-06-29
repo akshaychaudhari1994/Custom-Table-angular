@@ -30,6 +30,7 @@ export class DataTableComponent {
   @Output() filterChangeEvent = new EventEmitter<any>();
   @Output() onFilterScrollTab = new EventEmitter<any>();
   @Output() pageChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onSearch = new EventEmitter<any>();
 
   sortColumn: string = '';
   sortDirection: string = '';
@@ -94,17 +95,18 @@ export class DataTableComponent {
   }
 
   applyFilter(e: any) {
-    if (e.target.value) {
-      this.filteredData = this.tableData.filter((row) =>
-        Object.values(row).some((value) =>
-          String(value).toLowerCase().includes(e.target.value.toLowerCase())
-        )
-      );
-    } else {
-      this.filteredData = [...this.tableData];
-    }
+    this.onSearch.emit(e.target.value)
+    // if (e.target.value) {
+    //   this.filteredData = this.tableData.filter((row) =>
+    //     Object.values(row).some((value) =>
+    //       String(value).toLowerCase().includes(e.target.value.toLowerCase())
+    //     )
+    //   );
+    // } else {
+    //   this.filteredData = [...this.tableData];
+    // }
     this.currentPage = 1; // Reset current page when filtering
-    this.updatePagination();
+    // this.updatePagination();
   }
 
   rowClicked(item: any, action: any) {

@@ -16,7 +16,8 @@
     <div class="row">
         <app-data-table [isPageable]="true" [paginationSize]="5" 
         [totalPages]="totalPages" (pageChange)="onPageChange($event)"
-        (sorting)="sortData($event)" (rowClickedEvent)="onRowAction($event)" [isFilterable]="true"
+        (sorting)="sortData($event)" (rowClickedEvent)="onRowAction($event)"
+         [isFilterable]="true" (onSearch)="onSearch($event)"
             [tableColumns]="ordersTableColumns" [tableData]="orders" [actions]="actionConfig">
         </app-data-table>
     </div>

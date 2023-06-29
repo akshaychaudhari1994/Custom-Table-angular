@@ -17,6 +17,10 @@ export class OrderService {
     return this.apiService.post(this.API_ROUTES + '/order/list', data);
   }
 
+  deleteOrder(id: any) {
+    return this.apiService.delete(this.API_ROUTES + '/order/delete/' + id);
+  }
+
   createOrder(data: any) {
     return this.apiService.post(this.API_ROUTES + '/order/create', data);
   }
