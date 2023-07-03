@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
-import { RowAction } from './../custom-table/custom-table.component';
 import { HEADERS } from './../data-table/table-header';
 import { OrderService } from './../services/order.service';
 import { UtilsService } from './../services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { OrderFormComponent } from './order-form/order-form.component';
+import { RowAction } from '../data-table/row-action';
 
 export interface Order {
   id?: string;
@@ -16,6 +16,7 @@ export interface Order {
   age: number;
   email: string;
 }
+
 
 export enum Actions {
   REMOVE_SHOPPING_CART = 'remove_shopping_cart'

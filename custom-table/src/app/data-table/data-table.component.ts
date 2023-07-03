@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { CommonService } from '../services/common.service';
 import { UtilsService } from '../services/utils.service';
-import { RowAction } from '../custom-table/custom-table.component';
+import { RowAction } from './row-action';
 
 @Component({
   selector: 'app-data-table',
